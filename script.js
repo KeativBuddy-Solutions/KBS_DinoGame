@@ -17,17 +17,22 @@ window.onload = function() {
     board.height = boardHeight;
     board.width = boardWidth;
     context = board.getContext("2d"); 
+    console.log("Board and context initialized"); 
 
     dinoImg = loadImage("./img/dino.png", () => drawImage(dinoImg, dino));
+    console.log("Dino image loaded"); 
 
     cactus1Img = loadImage(cactusTypes[0].imgSrc);
     cactus2Img = loadImage(cactusTypes[1].imgSrc);
     cactus3Img = loadImage(cactusTypes[2].imgSrc);
+    console.log("Cactus images loaded"); 
 
     restartButton = document.getElementById("restartButton");
     restartButton.addEventListener("click", restartGame);
+    console.log("Restart button initialized"); 
 
     requestAnimationFrame(update);
+    console.log("Game started"); 
     setInterval(placeCactus, 1000);
     document.addEventListener("keydown", moveDino);
 }
@@ -50,29 +55,34 @@ function update() {
 
     velocityY += gravity;
     dino.y = Math.min(dino.y + velocityY, dinoY);
+    console.log("Dino position:", dino.x, dino.y); 
     drawImage(dinoImg, dino);
 
     for (let cactus of cactusArray) {
         cactus.x += velocityX;
+        console.log("Cactus position:", cactus.x, cactus.y); 
         drawImage(cactus.img, cactus);
         if (detectCollision(dino, cactus)) endGame();
     }
 
-    score++; // Increment score
+    score++;
+    console.log("Score:", score);
     context.fillStyle = "black";
     context.font = "20px courier";
-    context.fillText(`Score: ${score}`, 5, 20);
+    context.fillText(`Score: ${score}`, 5, 20); 
 
     if (gameOver) {
         context.fillStyle = "red";
         context.font = "40px courier";
         context.fillText("Game Over", boardWidth / 2 - 100, boardHeight / 2);
+        console.log("Game Over"); 
     }
 }
 
 function moveDino(e) {
     if (gameOver || dino.y != dinoY) return;
     if (e.code === "Space" || e.code === "ArrowUp") velocityY = -10;
+    console.log("Dino jumped");
 }
 
 function placeCactus() {
@@ -91,6 +101,7 @@ function placeCactus() {
     });
 
     if (cactusArray.length > 5) cactusArray.shift();
+    console.log("Cactus placed"); 
 }
 
 function detectCollision(a, b) {

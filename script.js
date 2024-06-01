@@ -4,6 +4,7 @@ let dinoWidth = 88, dinoHeight = 94, dinoX = 50, dinoY = boardHeight - dinoHeigh
 let dino = { x: dinoX, y: dinoY, width: dinoWidth, height: dinoHeight };
 let cactusArray = [], velocityX = -8, velocityY = 0, gravity = 0.4;
 let gameOver = false, score = 0;
+let restartButton;
 
 const cactusTypes = [
     { imgSrc: "./img/cactus1.png", width: 34, height: 70 },
@@ -22,6 +23,9 @@ window.onload = function() {
     cactus1Img = loadImage(cactusTypes[0].imgSrc);
     cactus2Img = loadImage(cactusTypes[1].imgSrc);
     cactus3Img = loadImage(cactusTypes[2].imgSrc);
+
+    restartButton = document.getElementById("restartButton");
+    restartButton.addEventListener("click", restartGame);
 
     requestAnimationFrame(update);
     setInterval(placeCactus, 1000);
@@ -54,9 +58,16 @@ function update() {
         if (detectCollision(dino, cactus)) endGame();
     }
 
+    score++; // Increment score
     context.fillStyle = "black";
     context.font = "20px courier";
-    context.fillText(++score, 5, 20);
+    context.fillText(`Score: ${score}`, 5, 20);
+
+    if (gameOver) {
+        context.fillStyle = "red";
+        context.font = "40px courier";
+        context.fillText("Game Over", boardWidth / 2 - 100, boardHeight / 2);
+    }
 }
 
 function moveDino(e) {
@@ -93,4 +104,14 @@ function endGame() {
     gameOver = true;
     dinoImg.src = "./img/dino-dead.png";
     dinoImg.onload = () => drawImage(dinoImg, dino);
+}
+
+function restartGame() {
+    score = 0;
+    cactusArray = [];
+    velocityY = 0;
+    gameOver = false;
+    dinoImg.src = "./img/dino.png";
+    dinoImg.onload = () => drawImage(dinoImg, dino);
+    requestAnimationFrame(update);
 }
